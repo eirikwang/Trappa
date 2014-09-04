@@ -3,6 +3,7 @@ import (
 	"github.com/hybridgroup/gobot"
 	"github.com/hybridgroup/gobot/platforms/i2c"
 	"math/big"
+	"fmt"
 )
 
 const (
@@ -32,13 +33,15 @@ func NewMCP9828Driver(a i2c.I2cInterface, name string)  (*MCP9828Driver){
 }
 func (h *MCP9828Driver) Start() bool {
 	h.i2c().I2cStart(IO_addr)
-	h.i2c().I2cWrite([]byte("A"))
-
 	gobot.Every(h.Interval(), func() {
 			i:= new(big.Int)
-			i.SetBytes(h.i2c().I2cRead(READ_SIZE))
+			value := h.i2c().I2cRead(READ_SIZE)
+			fmt.Println(value)
+			i.SetBytes(value)
 			i.And(i, big.NewInt(0x0fff))
+			fmt.Println(i.String())
 			h.Temperature = big.NewRat(i.Int64(), 10);
+			fmt.Println(big.NewRat(i.Int64(), 10))
 		})
 	return true
 }
