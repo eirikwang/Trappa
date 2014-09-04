@@ -8,13 +8,17 @@ import (
 	"time"
 )
 
+type localBB struct {
+	beaglebone.BeagleboneAdaptor
+}
+
 func main() {
 	gbot := gobot.NewGobot()
 	beagleboneAdaptor := beaglebone.NewBeagleboneAdaptor("beaglebone")
-	temp := drivers.NewMCP9828Driver(beagleboneAdaptor, drivers.IO_port)
+	temp := drivers.NewMCP9808Driver(beagleboneAdaptor, "MCP9808 Temperature sensor")
 	work := func() {
 		gobot.Every(1*time.Second, func() {
-				fmt.Println("Temp", temp.Temperature)
+				fmt.Println("Temp", temp.Temperature.FloatString(4))
 			})
 	}
 
