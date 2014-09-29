@@ -8,10 +8,10 @@ import (
 	"bytes"
 )
 
-const (
-	MCP9808_COM_MANIFACTURER  byte = 0x06
-	MCP9808_COM_DEVICE       byte  = 0x07
-	MCP9808_COM_AMBIENT_TEMP byte  = 0x05
+var (
+	MCP9808_COM_MANIFACTURER  []byte = []byte{0x06}
+	MCP9808_COM_DEVICE       []byte  = []byte{0x07}
+	MCP9808_COM_AMBIENT_TEMP []byte  = []byte{0x05}
 )
 
 type MCP9808Driver struct {
@@ -20,7 +20,7 @@ type MCP9808Driver struct {
 	Temperature *big.Rat
 }
 
-func createMCP9892Driver(i2cInterface i2c.I2cInterface, name string) *gobot.Driver {
+func createi2cDriver(i2cInterface i2c.I2cInterface, name string) *gobot.Driver {
 	return gobot.NewDriver(
 		name,
 		"MCP9808Driver",
@@ -32,7 +32,7 @@ func createMCP9892Driver(i2cInterface i2c.I2cInterface, name string) *gobot.Driv
 func NewMCP9808Driver(i2cInterface i2c.I2cInterface, name string) (*MCP9808Driver) {
 	return &MCP9808Driver{
 		Address: 0x18,
-		i2cDriver: newI2cDriver(createMCP9892Driver(i2cInterface, name)),
+		i2cDriver: newI2cDriver(createi2cDriver(i2cInterface, name)),
 	}
 }
 

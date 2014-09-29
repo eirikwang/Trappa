@@ -6,7 +6,6 @@ import (
 	"bytes"
 	"encoding/binary"
 )
-
 type i2cDriver struct {
 	gobot.Driver
 }
@@ -16,11 +15,14 @@ func newI2cDriver(driver *gobot.Driver) i2cDriver{
 func (h *i2cDriver) i2c() (i2c.I2cInterface) {
 	return h.Adaptor().(i2c.I2cInterface)
 }
-func (h *i2cDriver) read16(command byte)([]byte){
-	h.i2c().I2cWrite([]byte{command});
-	return h.i2c().I2cRead(uint(2))
+func (h *i2cDriver) read16(command []byte)([]byte){
+	return h.read(command, uint(2))
 }
-func (h *i2cDriver) readInt16(command byte)(in int16){
+func (h *i2cDriver) read(command []byte, bytes uint)([]byte){
+	h.i2c().I2cWrite(command);
+	return h.i2c().I2cRead(uint(bytes))
+}
+func (h *i2cDriver) readInt16(command []byte)(in int16){
 	binary.Read(bytes.NewReader(h.read16(command)), binary.BigEndian, &in)
 	return
 }

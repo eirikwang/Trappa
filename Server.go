@@ -6,25 +6,27 @@ import (
 	"github.com/eirikwang/Trappa/drivers"
 	"fmt"
 	"time"
-)
 
-type localBB struct {
-	beaglebone.BeagleboneAdaptor
-}
+	//"github.com/hybridgroup/gobot/platforms/gpio"
+)
 
 func main() {
 	gbot := gobot.NewGobot()
 	beagleboneAdaptor := beaglebone.NewBeagleboneAdaptor("beaglebone")
-	temp := drivers.NewMCP9808Driver(beagleboneAdaptor, "MCP9808 Temperature sensor")
+
+	lux := drivers.NewTSL2561Driver(beagleboneAdaptor, "TSL2561 motion sensor")
+		//"temperature" : drivers.NewMCP9808Driver(beagleboneAdaptor, "MCP9808 Temperature sensor"),
+		//"motion" : gpio.NewDirectPinDriver(beagleboneAdaptor, "motion", "P9_12"),
+
 	work := func() {
 		gobot.Every(1*time.Second, func() {
-				fmt.Println("Temp", temp.Temperature.FloatString(4))
+				fmt.Println("Lux: ", lux.Lux);
 			})
 	}
 
 	robot := gobot.NewRobot("servoBot",
 		[]gobot.Connection{beagleboneAdaptor},
-		[]gobot.Device{temp},
+		[]gobot.Device{lux},
 		work,
 	)
 
