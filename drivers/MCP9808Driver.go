@@ -30,11 +30,17 @@ func createi2cDriver(i2cInterface i2c.I2cInterface, name string) *gobot.Driver {
 }
 
 func NewMCP9808Driver(i2cInterface i2c.I2cInterface, name string) (*MCP9808Driver) {
-	return &MCP9808Driver{
+	driver := &MCP9808Driver{
 		Address: 0x18,
 		i2cDriver: newI2cDriver(createi2cDriver(i2cInterface, name)),
 	}
+	driver.i2cDriver.AddCommand("Read",  func(params map[string]interface{}) interface{} {
+			temp, _ := driver.Temperature.Float64();
+			return temp;
+		});
+	return driver;
 }
+
 
 func (h *MCP9808Driver) Start() bool {
 	h.i2c().I2cStart(h.Address)
